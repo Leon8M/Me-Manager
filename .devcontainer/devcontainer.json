@@ -1,0 +1,13 @@
+{
+    "name": "Me-Manager",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "features": {
+        "powershell": "latest"
+    },
+    "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.defaultProfile.windows": "PowerShell"
+    },
+    "postCreateCommand": "pip install -r requirements.txt",
+    "remoteUser": "vscode"
+}
