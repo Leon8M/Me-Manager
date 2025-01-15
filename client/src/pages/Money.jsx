@@ -6,7 +6,7 @@ import Savings from '../components/Savings';
 
 function Money() {
   return (
-    <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 sm:grid-cols-1 sm:flex sm:flex-col sm:gap-4 h-screen">
+    <div className="sm:flex sm:flex-col sm:gap-4 p-4 md:grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 h-screen">
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
         <Income />
       </div>
