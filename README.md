@@ -31,12 +31,6 @@ Me Manager is designed to simplify your life by providing a centralized platform
 
 ## Support
 
-Have questions or need help?  Contact us at [your_email@example.com](mailto:your_email@example.com).
+Have questions or need help?  Contact us at [leonmunenr254@gmail.com].
 
 ---
-
-**(Optional) Screenshots/Mockups:**  Include screenshots or mockups of the app to showcase its interface and features.
-
-**(Optional) Privacy Policy:** Link to your privacy policy.
-
-**(Optional) Testimonials:** Include positive reviews or testimonials from users.
