@@ -3,9 +3,9 @@ import httpClient from "../httpClient";
 
 function Budget() {
   const [budget, setBudget] = useState("");
-  const [currBudget, setCurrBudget] = useState("");
+  const [currBudget, setCurrBudget] = useState(0);
   const [expenses, setExpenses] = useState([]);
-  const [remainingBudget, setRemainingBudget] = useState("");
+  const [remainingBudget, setRemainingBudget] = useState(0);
   const [leftover, setLeftover] = useState(0);
 
   const changeBudget = async (e) => {
@@ -14,7 +14,7 @@ function Budget() {
       await httpClient.post("//localhost:8080/budget", { budget });
       alert("Budget updated");
       setBudget("");
-      getBudget(); // Refresh the budget after update
+      getBudget();
     } catch (error) {
       alert("Failed to update budget");
     }
@@ -24,11 +24,11 @@ function Budget() {
     try {
       const response = await httpClient.get("//localhost:8080/budget");
       setCurrBudget(response.data.num);
-      return response.data.num; // Return the budget value for further use
+      return response.data.num;
     } catch (error) {
       console.error("Error fetching budget:", error);
       alert("Unable to get budget");
-      return 0; // Default to zero if fetching fails
+      return 0;
     }
   };
 
@@ -36,11 +36,11 @@ function Budget() {
     try {
       const response = await httpClient.get("//localhost:8080/expenses");
       setExpenses(response.data);
-      return response.data; // Return the expenses array for further use
+      return response.data;
     } catch (error) {
       console.error("Error fetching expenses:", error);
       alert("Unable to get expenses");
-      return []; // Default to an empty array if fetching fails
+      return [];
     }
   };
 
@@ -67,8 +67,7 @@ function Budget() {
       const expensesList = await fetchExpenses();
       calculateRemainingBudget(budgetValue, expensesList);
     };
-
-    initializeData(); // Fetch and calculate on component mount
+    initializeData();
   }, []);
 
   return (
@@ -109,6 +108,16 @@ function Budget() {
         <h2 className="text-lg font-semibold text-gray-700">
           Leftover for this month: <span className="text-purple-700">${leftover}</span>
         </h2>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mt-4">
+        <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div
+            className="bg-blue-600 h-2.5 rounded-full"
+            style={{ width: `${(remainingBudget / currBudget) * 100}%` }}
+          ></div>
+        </div>
       </div>
 
       {leftover > 0 && (
