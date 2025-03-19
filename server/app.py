@@ -159,6 +159,18 @@ def save_leftover():
         session.rollback()
         return jsonify({"error": str(e)}), 400
 
+@app.route('/leftover', methods=['GET'])
+def get_leftover():
+    leftovers = session.query(Leftover).all()
+    leftover_list = [
+        {
+            "id": record.id,
+            "amount": record.amount,
+            "created_at": record.created_at,
+        }
+        for record in leftovers
+    ]
+    return jsonify(leftover_list), 200
 
 
 # Run the Flask app

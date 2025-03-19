@@ -3,6 +3,7 @@ import Income from '../components/Income';
 import Budget from '../components/Budget';
 import Expenses from '../components/Expenses';
 import Savings from '../components/Savings';
+import { PieChart, BarChart } from '../components/Charts'; // Add chart components
 
 function Money() {
   return (
@@ -18,6 +19,14 @@ function Money() {
       </div>
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
         <Savings />
+      </div>
+      <div className="col-span-2 p-4 bg-gray-100 shadow-md rounded-md">
+        <h2 className="text-xl font-bold mb-4">Expense Breakdown</h2>
+        <PieChart />
+      </div>
+      <div className="col-span-2 p-4 bg-gray-100 shadow-md rounded-md">
+        <h2 className="text-xl font-bold mb-4">Monthly Trends</h2>
+        <BarChart />
       </div>
     </div>
   );
