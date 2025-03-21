@@ -2,10 +2,10 @@ import React from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
-  ArcElement, // Required for pie/doughnut charts
-  CategoryScale, // Required for bar charts
-  LinearScale, // Required for bar charts
-  BarElement, // Required for bar charts
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Tooltip,
   Legend,
 } from 'chart.js';
@@ -20,32 +20,68 @@ ChartJS.register(
   Legend
 );
 
-export const PieChart = () => {
+export const PieChart = ({ expenses }) => {
   const data = {
-    labels: ['Food', 'Transport', 'Home', 'Miscellaneous'],
+    labels: expenses.map((expense) => expense.category),
     datasets: [
       {
-        data: [300, 50, 100, 50], // Example data
+        data: expenses.map((expense) => expense.amount),
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
         hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
       },
     ],
   };
 
-  return <Pie data={data} />;
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false, // Allow chart to resize
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Expense Breakdown by Category',
+      },
+    },
+  };
+
+  return (
+    <div style={{ height: '300px', width: '100%' }}>
+      <Pie data={data} options={options} />
+    </div>
+  );
 };
 
-export const BarChart = () => {
+export const BarChart = ({ expenses }) => {
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: expenses.map((expense) => expense.name),
     datasets: [
       {
         label: 'Expenses',
         backgroundColor: '#36A2EB',
-        data: [65, 59, 80, 81, 56, 55, 40], // Example data
+        data: expenses.map((expense) => expense.amount),
       },
     ],
   };
 
-  return <Bar data={data} />;
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false, // Allow chart to resize
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Monthly Expenses',
+      },
+    },
+  };
+
+  return (
+    <div style={{ height: '300px', width: '100%' }}>
+      <Bar data={data} options={options} />
+    </div>
+  );
 };
