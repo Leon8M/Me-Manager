@@ -8,8 +8,9 @@ import httpClient from '../httpClient';
 
 function Money() {
   const [expenses, setExpenses] = useState([]);
+  const [budget, setBudget] = useState(0);
 
-  // Fetch expenses from the backend
+  // Fetch expenses and budget from the backend
   const fetchExpenses = async () => {
     try {
       const response = await httpClient.get('//localhost:8080/expenses');
@@ -20,30 +21,57 @@ function Money() {
     }
   };
 
-  // Fetch expenses when the component mounts
+  const fetchBudget = async () => {
+    try {
+      const response = await httpClient.get('//localhost:8080/budget');
+      setBudget(response.data.num);
+    } catch (error) {
+      console.error('Error fetching budget:', error);
+      alert('Unable to fetch budget');
+    }
+  };
+
+  // Fetch data when the component mounts
   useEffect(() => {
     fetchExpenses();
+    fetchBudget();
   }, []);
 
   return (
-    <div className="sm:flex sm:flex-col sm:gap-4 p-4 md:grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 h-screen">
-      <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Money Manager</h1>
+
+      {/* Income Component (Always Visible) */}
+      <div className="mb-6">
         <Income fetchExpenses={fetchExpenses} />
       </div>
-      <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Budget fetchExpenses={fetchExpenses} expenses={expenses} />
+
+      {/* Budget Component */}
+      <div className="mb-6">
+        <Budget
+          fetchExpenses={fetchExpenses}
+          expenses={expenses}
+          budget={budget}
+          fetchBudget={fetchBudget}
+        />
       </div>
-      <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Expenses fetchExpenses={fetchExpenses} />
+
+      {/* Expenses and Savings Components */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <Expenses fetchExpenses={fetchExpenses} />
+        </div>
+        <div>
+          <Savings fetchExpenses={fetchExpenses} />
+        </div>
       </div>
-      <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Savings fetchExpenses={fetchExpenses} />
-      </div>
-      <div className="col-span-2 p-4 bg-gray-100 shadow-md rounded-md">
+
+      {/* Charts */}
+      <div className="mb-6">
         <h2 className="text-xl font-bold mb-4">Expense Breakdown</h2>
         <PieChart expenses={expenses} />
       </div>
-      <div className="col-span-2 p-4 bg-gray-100 shadow-md rounded-md">
+      <div className="mb-6">
         <h2 className="text-xl font-bold mb-4">Monthly Trends</h2>
         <BarChart expenses={expenses} />
       </div>

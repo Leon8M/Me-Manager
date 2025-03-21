@@ -1,33 +1,45 @@
-//Here We track all savings
 import React, { useState } from 'react';
 import httpClient from '../httpClient';
 
-function Savings() {
+function Savings({ fetchExpenses }) {
   const [action, setAction] = useState('');
   const [amount, setAmount] = useState('');
   const [list, setList] = useState([]);
 
   const addSavings = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
+      const savingsAmount = parseInt(amount);
+
+      // Step 1: Save the action & amount to savings database
       await httpClient.post('//localhost:8080/save', {
         action,
-        amount,
+        amount: savingsAmount,
       });
-      alert('Savings added successfully');
+
+      // Step 2: If the action is "Increment", also log it as an expense
+      if (action === "Increment") {
+        await httpClient.post('//localhost:8080/expenses', {
+          name: "Savings",
+          category: "Miscellaneous",
+          amount: savingsAmount,
+        });
+        fetchExpenses(); // Refresh expenses list
+      }
+
+      alert('Savings updated successfully');
       setAction('');
       setAmount('');
     } catch (error) {
       console.error('Error adding savings:', error);
-      alert('Unable to add savings');
+      alert('Unable to update savings');
     }
   };
 
   const listSavings = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
       const response = await httpClient.get('//localhost:8080/save');
-      console.log('Response data:', response.data);
       setList(response.data);
     } catch (error) {
       console.error('Error fetching savings:', error);
@@ -41,10 +53,7 @@ function Savings() {
 
       <form className="space-y-4">
         <div>
-          <label
-            htmlFor="action_save"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="action_save" className="block text-sm font-medium text-gray-700">
             Action
           </label>
           <select
@@ -61,10 +70,7 @@ function Savings() {
         </div>
 
         <div>
-          <label
-            htmlFor="save-amount"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="save-amount" className="block text-sm font-medium text-gray-700">
             Amount
           </label>
           <input
@@ -83,7 +89,7 @@ function Savings() {
             onClick={addSavings}
             className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition"
           >
-            Add Saving
+            Update Savings
           </button>
           <button
             onClick={listSavings}
@@ -98,10 +104,7 @@ function Savings() {
         <h2 className="text-lg font-bold text-gray-700 mb-2">Savings List</h2>
         <ul className="space-y-3">
           {list.map((save) => (
-            <li
-              key={save.id}
-              className="p-4 border rounded-md bg-gray-50 shadow-sm"
-            >
+            <li key={save.id} className="p-4 border rounded-md bg-gray-50 shadow-sm">
               <p className="text-sm font-medium text-gray-900">
                 <span className="font-semibold">Action:</span> {save.action}
               </p>
@@ -122,4 +125,3 @@ function Savings() {
 }
 
 export default Savings;
-

@@ -110,18 +110,22 @@ def get_budget():
 def add_savings():
     data = request.json
     try:
+        amount = int(data['amount'])  # Ensure amount is an integer
+        if data['action'] == "Decrement":
+            amount = -amount  # Convert to negative to reduce savings
+
         new_save = Savings(
             action=data['action'],
-            amount=data['amount'],
+            amount=amount,  # Store as positive or negative based on action
             month=calc.get_current_month(),  # Track savings by month
         )
         session.add(new_save)
         session.commit()
-        return jsonify({"message": "Savings added successfully"})
+        return jsonify({"message": "Savings updated successfully"})
     except Exception as e:
         session.rollback()
         return jsonify({"error": str(e)}), 400
-
+    
 @app.route('/save', methods=['GET'])
 def get_savings():
     savings_records = session.query(Savings).all()
