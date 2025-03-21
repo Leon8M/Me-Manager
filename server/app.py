@@ -2,10 +2,11 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Income, Expenses, Savings, Leftover  # Import the models
-import config  # Import config settings
+from models import Base, Income, Expenses, Savings, Leftover
+import config
 import calc
 from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -25,7 +26,6 @@ def monthly_budget_job():
     """Scheduled job to handle end-of-month tasks."""
     calc.track_monthly_budget(session, budget)
 
-
 scheduler.start()
 
 # Example route: Home
@@ -36,7 +36,6 @@ def home():
 @app.route('/income', methods=['POST'])
 def add_income():
     data = request.json
-    
     try:
         new_income = Income(
             name=data['name'],
@@ -67,12 +66,12 @@ def get_income():
 @app.route('/expenses', methods=['POST'])
 def add_expenses():
     data = request.json
-    
     try:
         new_expense = Expenses(
-            name=data['name'], 
+            name=data['name'],
             category=data['category'],
             amount=data['amount'],
+            month=calc.get_current_month(),  # Track expenses by month
         )
         session.add(new_expense)
         session.commit()
@@ -85,7 +84,6 @@ def add_expenses():
 def get_expenses():
     expenses_records = session.query(Expenses).all()
     total_expenses = sum(record.amount for record in expenses_records)
-    
     expenses_list = [
         {
             'id': record.id,
@@ -97,29 +95,25 @@ def get_expenses():
         for record in expenses_records
     ]
     return jsonify(expenses_list), 200
-    
 
 @app.route('/budget', methods=['POST'])
 def set_budget():
     data = request.get_json()
-    budget["num"] =  data['budget']
-    
+    budget["num"] = data['budget']
     return jsonify({'message': 'budget changed'}), 201
-
 
 @app.route('/budget', methods=['GET'])
 def get_budget():
     return jsonify(budget), 200
 
-
-@app.route ('/save', methods=['POST'])
+@app.route('/save', methods=['POST'])
 def add_savings():
     data = request.json
-    
     try:
         new_save = Savings(
             action=data['action'],
             amount=data['amount'],
+            month=calc.get_current_month(),  # Track savings by month
         )
         session.add(new_save)
         session.commit()
@@ -128,30 +122,27 @@ def add_savings():
         session.rollback()
         return jsonify({"error": str(e)}), 400
 
-@app.route ('/save', methods=['GET'])
+@app.route('/save', methods=['GET'])
 def get_savings():
     savings_records = session.query(Savings).all()
     total_savings = sum(record.amount for record in savings_records)
-    
     saving_list = [
         {
-         'id': record.id,
-         'action': record.action,
-         'amount': record.amount,
-         'total': total_savings}
+            'id': record.id,
+            'action': record.action,
+            'amount': record.amount,
+            'total': total_savings
+        }
         for record in savings_records
     ]
-    
     return jsonify(saving_list), 200
 
 @app.route('/leftover', methods=['POST'])
 def save_leftover():
     data = request.json
     leftover_amount = data.get("leftover", 0)
-
     try:
-        # Save leftover in a database table for future reference
-        new_leftover = Leftover(amount=leftover_amount)
+        new_leftover = Leftover(amount=leftover_amount, month=calc.get_current_month())
         session.add(new_leftover)
         session.commit()
         return jsonify({"message": "Leftover saved successfully"}), 201
@@ -167,11 +158,11 @@ def get_leftover():
             "id": record.id,
             "amount": record.amount,
             "created_at": record.created_at,
+            "month": record.month,
         }
         for record in leftovers
     ]
     return jsonify(leftover_list), 200
-
 
 # Run the Flask app
 if __name__ == '__main__':
