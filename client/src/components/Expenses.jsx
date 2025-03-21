@@ -8,6 +8,8 @@ function Expenses({ fetchExpenses }) {
   const [category, setCartegory] = useState("");
   const [list, setList] = useState([]);
 
+
+
   const addExpense = async (e) => {
     e.preventDefault(); // Prevent default form submission
     try {

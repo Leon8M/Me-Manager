@@ -9,6 +9,7 @@ import httpClient from '../httpClient';
 function Money() {
   const [expenses, setExpenses] = useState([]);
   const [budget, setBudget] = useState(0);
+  const [savings, setSavings] = useState([]);
 
   // Fetch expenses and budget from the backend
   const fetchExpenses = async () => {
@@ -31,10 +32,21 @@ function Money() {
     }
   };
 
+  const fetchSavings = async () => {
+    try {
+      const response = await httpClient.get('//localhost:8080/save');
+      setSavings(response.data);
+    } catch (error) {
+      console.error('Error fetching savings:', error);
+      alert('Unable to fetch savings');
+    }
+  };
+
   // Fetch data when the component mounts
   useEffect(() => {
     fetchExpenses();
     fetchBudget();
+    fetchSavings();
   }, []);
 
   return (
@@ -62,7 +74,10 @@ function Money() {
           <Expenses fetchExpenses={fetchExpenses} />
         </div>
         <div>
-          <Savings fetchExpenses={fetchExpenses} />
+          <Savings 
+          fetchExpenses={fetchExpenses}
+          fetchSavings={fetchSavings}
+           />
         </div>
       </div>
 

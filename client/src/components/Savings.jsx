@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import httpClient from '../httpClient';
 
-function Savings({ fetchExpenses }) {
+function Savings({ fetchExpenses, fetchSavings }) {
   const [action, setAction] = useState('');
   const [amount, setAmount] = useState('');
+  const [savings, setSavings] = useState([]);
   const [list, setList] = useState([]);
+
+  useEffect(() => {
+    fetchSavings();
+  }, []);
 
   const addSavings = async (e) => {
     e.preventDefault();
@@ -30,6 +35,7 @@ function Savings({ fetchExpenses }) {
       alert('Savings updated successfully');
       setAction('');
       setAmount('');
+      fetchSavings();
     } catch (error) {
       console.error('Error adding savings:', error);
       alert('Unable to update savings');
