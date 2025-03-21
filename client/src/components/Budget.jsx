@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import httpClient from "../httpClient";
 
 function Budget() {
-  const [budget, setBudget] = useState("");
-  const [currBudget, setCurrBudget] = useState(0);
+  const [budget, setBudget] = useState(""); // State for the input field
+  const [currBudget, setCurrBudget] = useState(0); // State for the current budget
   const [expenses, setExpenses] = useState([]);
   const [remainingBudget, setRemainingBudget] = useState(0);
   const [leftover, setLeftover] = useState(0);
@@ -11,10 +11,18 @@ function Budget() {
   const changeBudget = async (e) => {
     e.preventDefault();
     try {
+      // Send the new budget to the backend
       await httpClient.post("//localhost:8080/budget", { budget });
       alert("Budget updated");
+
+      // Update the current budget state
+      setCurrBudget(Number(budget));
+
+      // Clear the input field
       setBudget("");
-      getBudget();
+
+      // Fetch expenses to recalculate the remaining budget
+      fetchExpenses();
     } catch (error) {
       alert("Failed to update budget");
     }

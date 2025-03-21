@@ -8,6 +8,7 @@ import httpClient from '../httpClient';
 
 function Money() {
   const [expenses, setExpenses] = useState([]);
+  const [budget, setBudget] = useState(0);
 
   const fetchExpenses = async () => {
     try {
@@ -19,8 +20,19 @@ function Money() {
     }
   };
 
+  const fetchBudget = async () => {
+    try {
+      const response = await httpClient.get('//localhost:8080/budget');
+      setBudget(response.data.num);
+    } catch (error) {
+      console.error("Error fetching budget:", error);
+      alert("Unable to get budget");
+    }
+  };
+
   useEffect(() => {
     fetchExpenses();
+    fetchBudget();
   }, []);
 
   return (
@@ -29,10 +41,10 @@ function Money() {
         <Income />
       </div>
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Budget />
+        <Budget budget={budget} setBudget={setBudget} fetchExpenses={fetchExpenses} />
       </div>
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Expenses />
+        <Expenses fetchExpenses={fetchExpenses} />
       </div>
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
         <Savings />
@@ -48,5 +60,6 @@ function Money() {
     </div>
   );
 }
+
 
 export default Money;

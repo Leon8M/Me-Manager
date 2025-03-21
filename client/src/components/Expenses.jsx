@@ -5,7 +5,7 @@ import httpClient from '../httpClient';
 function Expenses() {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
-  const [category, setcartegory] = useState("");
+  const [category, setCartegory] = useState("");
   const [list, setList] = useState([]);
 
   const addExpense = async (e) => {
@@ -19,7 +19,7 @@ function Expenses() {
       alert('Expense added successfully');
       setName('');
       setAmount('');
-      setcartegory('')
+      setCartegory('');
     } catch (error) {
       console.error('Error adding Expense:', error);
       alert('Unable to add Expense');
@@ -90,7 +90,7 @@ function Expenses() {
             name="expenses"
             id="expenses"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => setCartegory(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option value="">Select a category</option>
