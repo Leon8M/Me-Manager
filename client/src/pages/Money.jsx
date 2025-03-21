@@ -8,8 +8,8 @@ import httpClient from '../httpClient';
 
 function Money() {
   const [expenses, setExpenses] = useState([]);
-  const [budget, setBudget] = useState(0);
 
+  // Fetch expenses from the backend
   const fetchExpenses = async () => {
     try {
       const response = await httpClient.get('//localhost:8080/expenses');
@@ -20,34 +20,24 @@ function Money() {
     }
   };
 
-  const fetchBudget = async () => {
-    try {
-      const response = await httpClient.get('//localhost:8080/budget');
-      setBudget(response.data.num);
-    } catch (error) {
-      console.error("Error fetching budget:", error);
-      alert("Unable to get budget");
-    }
-  };
-
+  // Fetch expenses when the component mounts
   useEffect(() => {
     fetchExpenses();
-    fetchBudget();
   }, []);
 
   return (
     <div className="sm:flex sm:flex-col sm:gap-4 p-4 md:grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 h-screen">
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Income />
+        <Income fetchExpenses={fetchExpenses} />
       </div>
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Budget budget={budget} setBudget={setBudget} fetchExpenses={fetchExpenses} />
+        <Budget fetchExpenses={fetchExpenses} expenses={expenses} />
       </div>
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
         <Expenses fetchExpenses={fetchExpenses} />
       </div>
       <div className="flex flex-col justify-center items-center p-4 bg-gray-100 shadow-md rounded-md">
-        <Savings />
+        <Savings fetchExpenses={fetchExpenses} />
       </div>
       <div className="col-span-2 p-4 bg-gray-100 shadow-md rounded-md">
         <h2 className="text-xl font-bold mb-4">Expense Breakdown</h2>
@@ -60,6 +50,5 @@ function Money() {
     </div>
   );
 }
-
 
 export default Money;

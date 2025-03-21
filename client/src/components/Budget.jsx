@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import httpClient from "../httpClient";
 
-function Budget() {
+function Budget({ fetchExpenses, expenses }) {
   const [budget, setBudget] = useState(""); // State for the input field
   const [currBudget, setCurrBudget] = useState(0); // State for the current budget
-  const [expenses, setExpenses] = useState([]);
   const [remainingBudget, setRemainingBudget] = useState(0);
   const [leftover, setLeftover] = useState(0);
 
@@ -40,18 +39,6 @@ function Budget() {
     }
   };
 
-  const fetchExpenses = async () => {
-    try {
-      const response = await httpClient.get("//localhost:8080/expenses");
-      setExpenses(response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching expenses:", error);
-      alert("Unable to get expenses");
-      return [];
-    }
-  };
-
   const calculateRemainingBudget = (budget, expenses) => {
     const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
     const remaining = budget - totalExpenses;
@@ -72,11 +59,10 @@ function Budget() {
   useEffect(() => {
     const initializeData = async () => {
       const budgetValue = await getBudget();
-      const expensesList = await fetchExpenses();
-      calculateRemainingBudget(budgetValue, expensesList);
+      calculateRemainingBudget(budgetValue, expenses);
     };
     initializeData();
-  }, []);
+  }, [expenses]); // Recalculate when expenses change
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">

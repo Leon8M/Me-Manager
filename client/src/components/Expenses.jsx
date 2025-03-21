@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import httpClient from '../httpClient';
 
-function Expenses() {
+function Expenses({ fetchExpenses }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [category, setCartegory] = useState("");
@@ -20,6 +20,7 @@ function Expenses() {
       setName('');
       setAmount('');
       setCartegory('');
+      fetchExpenses();
     } catch (error) {
       console.error('Error adding Expense:', error);
       alert('Unable to add Expense');
