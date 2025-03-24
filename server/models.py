@@ -48,9 +48,6 @@ class Note(Base):
     tags = Column(String(200), nullable=True)  # Comma-separated tags
     
 
-class Note(Base):
-    # ... existing columns ...
-
     def to_dict(self):
         return {
             'id': self.id,

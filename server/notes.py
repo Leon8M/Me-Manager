@@ -16,8 +16,14 @@ session = Session()
 
 @notes_bp.route('/notes', methods=['POST'])
 def create_note():
-    data = request.json
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+    
     try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
         # Handle different note types
         note_data = {}
         if data.get('note_type') == 'list':
@@ -37,6 +43,7 @@ def create_note():
         session.add(new_note)
         session.commit()
         return jsonify(new_note.to_dict()), 201
+        
     except Exception as e:
         session.rollback()
         return jsonify({"error": str(e)}), 400

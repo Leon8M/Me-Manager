@@ -19,19 +19,35 @@ const Notes = () => {
     const fetchNotes = async () => {
         try {
             setLoading(true);
-            let url = '/api/notes';
+            // Use full URL in development
+            let url = 'http://localhost:8080/api/notes';
+            
             if (searchQuery || activeTag) {
-                url = '/api/notes/search?';
+                url = 'http://localhost:8080/api/notes/search?';
                 if (searchQuery) url += `q=${encodeURIComponent(searchQuery)}`;
                 if (activeTag) url += `${searchQuery ? '&' : ''}tag=${encodeURIComponent(activeTag)}`;
             }
             
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to fetch notes');
+            const response = await fetch(url, {
+                credentials: 'include'  // Needed for cookies/sessions if using them
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                throw new Error(`Expected JSON but got: ${text.substring(0, 50)}`);
+            }
+    
             const data = await response.json();
             setNotes(data);
+            setError('');
         } catch (err) {
-            setError(err.message);
+            setError(`Failed to fetch notes: ${err.message}`);
+            console.error('Fetch error:', err);
         } finally {
             setLoading(false);
         }
