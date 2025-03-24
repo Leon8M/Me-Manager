@@ -5,20 +5,20 @@ import Expenses from '../components/Expenses';
 import Savings from '../components/Savings';
 import { PieChart, BarChart } from '../components/Charts';
 import httpClient from '../httpClient';
+import { FaMoneyBillWave, FaChartPie, FaChartBar } from 'react-icons/fa';
 
 function Money() {
   const [expenses, setExpenses] = useState([]);
   const [budget, setBudget] = useState(0);
   const [savings, setSavings] = useState([]);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Fetch expenses and budget from the backend
   const fetchExpenses = async () => {
     try {
       const response = await httpClient.get('//localhost:8080/expenses');
       setExpenses(response.data);
     } catch (error) {
       console.error('Error fetching expenses:', error);
-      alert('Unable to fetch expenses');
     }
   };
 
@@ -28,7 +28,6 @@ function Money() {
       setBudget(response.data.num);
     } catch (error) {
       console.error('Error fetching budget:', error);
-      alert('Unable to fetch budget');
     }
   };
 
@@ -38,11 +37,9 @@ function Money() {
       setSavings(response.data);
     } catch (error) {
       console.error('Error fetching savings:', error);
-      alert('Unable to fetch savings');
     }
   };
 
-  // Fetch data when the component mounts
   useEffect(() => {
     fetchExpenses();
     fetchBudget();
@@ -50,46 +47,64 @@ function Money() {
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Money Manager</h1>
+    <div className="min-h-screen bg-gray-100 p-4">
+      {/* Navigation */}
+      <nav className="flex justify-around items-center bg-black text-white p-4 mb-6 rounded-lg">
+        <button 
+          onClick={() => setActiveTab('dashboard')} 
+          className={`flex items-center gap-2 ${activeTab === 'dashboard' ? 'text-white' : 'text-gray-400'}`}
+        >
+          <FaMoneyBillWave />
+          Dashboard
+        </button>
+        <button 
+          onClick={() => setActiveTab('charts')} 
+          className={`flex items-center gap-2 ${activeTab === 'charts' ? 'text-white' : 'text-gray-400'}`}
+        >
+          <FaChartPie />
+          Charts
+        </button>
+      </nav>
 
-      {/* Income Component (Always Visible) */}
-      <div className="mb-6">
-        <Income fetchExpenses={fetchExpenses} />
-      </div>
+      {activeTab === 'dashboard' ? (
+        <>
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg shadow">
+              <Income fetchExpenses={fetchExpenses} />
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow">
+              <Budget
+                fetchExpenses={fetchExpenses}
+                expenses={expenses}
+                budget={budget}
+                fetchBudget={fetchBudget}
+              />
+            </div>
+          </div>
 
-      {/* Budget Component */}
-      <div className="mb-6">
-        <Budget
-          fetchExpenses={fetchExpenses}
-          expenses={expenses}
-          budget={budget}
-          fetchBudget={fetchBudget}
-        />
-      </div>
-
-      {/* Expenses and Savings Components */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div>
-          <Expenses fetchExpenses={fetchExpenses} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg shadow">
+              <Expenses fetchExpenses={fetchExpenses} />
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow">
+              <Savings fetchExpenses={fetchExpenses} fetchSavings={fetchSavings} />
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="bg-white p-4 rounded-lg shadow mb-6">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <FaChartPie /> Expense Breakdown
+          </h2>
+          <PieChart expenses={expenses} />
+          
+          <h2 className="text-xl font-bold mt-6 mb-4 flex items-center gap-2">
+            <FaChartBar /> Monthly Trends
+          </h2>
+          <BarChart expenses={expenses} />
         </div>
-        <div>
-          <Savings 
-          fetchExpenses={fetchExpenses}
-          fetchSavings={fetchSavings}
-           />
-        </div>
-      </div>
-
-      {/* Charts */}
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">Expense Breakdown</h2>
-        <PieChart expenses={expenses} />
-      </div>
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">Monthly Trends</h2>
-        <BarChart expenses={expenses} />
-      </div>
+      )}
     </div>
   );
 }

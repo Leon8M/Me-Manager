@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import httpClient from '../httpClient';
+import { FaMoneyBillWave, FaPlus, FaList } from 'react-icons/fa';
 
 function Income() {
   const [name, setName] = useState('');
@@ -7,99 +8,85 @@ function Income() {
   const [list, setList] = useState([]);
 
   const addIncome = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
       await httpClient.post('//localhost:8080/income', {
         name,
         amount,
       });
-      alert('Income added successfully');
       setName('');
       setAmount('');
     } catch (error) {
       console.error('Error adding income:', error);
-      alert('Unable to add income');
     }
   };
 
   const listIncome = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
       const response = await httpClient.get('//localhost:8080/income');
-      console.log('Response data:', response.data);
       setList(response.data);
     } catch (error) {
       console.error('Error fetching income:', error);
-      alert('Unable to list income');
     }
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-xl font-bold mb-4 text-center">Manage Income</h1>
+    <div>
+      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <FaMoneyBillWave /> Income
+      </h2>
       
-      <form className="space-y-4">
+      <form onSubmit={addIncome} className="space-y-3 mb-4">
         <div>
-          <label htmlFor="income-name" className="block text-sm font-medium text-gray-700">
-            Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Source</label>
           <input
             type="text"
-            name="name"
             value={name}
-            id="income-name"
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Income source (e.g., Salary)"
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Income source"
           />
         </div>
-
+        
         <div>
-          <label htmlFor="income-amount" className="block text-sm font-medium text-gray-700">
-            Amount
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
           <input
             type="number"
-            name="amount"
             value={amount}
-            id="income-amount"
             onChange={(e) => setAmount(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter amount"
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Amount"
           />
         </div>
-
-        <div className="flex space-x-4">
+        
+        <div className="flex gap-2">
           <button
-            onClick={addIncome}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition"
+            type="submit"
+            className="flex-1 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 flex items-center justify-center gap-2"
           >
-            Add Income
+            <FaPlus /> Add
           </button>
           <button
             onClick={listIncome}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+            className="flex-1 bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-300 flex items-center justify-center gap-2"
           >
-            List Income
+            <FaList /> List
           </button>
         </div>
       </form>
-
-      <h2 className="mt-6 text-lg font-semibold text-gray-700">Income List</h2>
-      <ul className="mt-4 space-y-2">
-        {list.map((income) => (
-          <li
-            key={income.id}
-            className="p-4 border rounded-md shadow-sm bg-gray-50 flex justify-between items-center"
-          >
-            <div>
-              <p className="text-sm font-medium text-gray-800">{income.name}</p>
-              <p className="text-sm text-gray-600">${income.amount}</p>
-            </div>
-            <p className="text-sm font-bold text-green-700">Total: ${income.total}</p>
-          </li>
-        ))}
-      </ul>
+      
+      <div>
+        <h3 className="font-medium mb-2">Recent Income</h3>
+        <ul className="space-y-2">
+          {list.slice(0, 3).map((income) => (
+            <li key={income.id} className="p-3 border border-gray-200 rounded flex justify-between">
+              <span className="font-medium">{income.name}</span>
+              <span className="text-gray-700">${income.amount}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

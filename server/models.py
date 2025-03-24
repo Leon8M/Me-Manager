@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, Text, JSON
 from datetime import datetime
 
 Base = declarative_base()
@@ -34,3 +34,15 @@ class Leftover(Base):
     amount = Column(Float, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     month = Column(String, nullable=False)  # Track leftovers by month
+
+class Note(Base):
+    __tablename__ = 'notes'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(100), nullable=False)
+    content = Column(Text, nullable=True)
+    note_type = Column(String(20), nullable=False)  # 'text', 'list', 'checklist'
+    is_locked = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    metadata = Column(JSON, nullable=True)  # For additional data like list items, etc.
+    tags = Column(String(200), nullable=True)  # Comma-separated tags

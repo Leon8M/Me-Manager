@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Money from './pages/Money';
 // Import other components as they are created
 //As an example Bud:
-// import Tasks from './pages/Tasks';
+// import Schedule from './pages/Schedule';
 // import Notes from './pages/Notes';
 
 function App() {
@@ -12,8 +12,8 @@ function App() {
     switch (activeTab) {
       case 'money':
         return <Money />;
-      // case 'tasks':
-      //   return <Tasks />;
+      // case 'schedule':
+      //   return <Schedule />;
       // case 'notes':
       //   return <Notes />;
       default:
@@ -34,12 +34,12 @@ function App() {
           Money Manager
         </button>
         <button
-          onClick={() => setActiveTab('tasks')}
+          onClick={() => setActiveTab('schedule')}
           className={`py-2 px-4 rounded ${
             activeTab === 'tasks' ? 'bg-blue-500' : 'bg-gray-700 hover:bg-gray-600'
           }`}
         >
-          Tasks
+          Schedule
         </button>
         <button
           onClick={() => setActiveTab('notes')}

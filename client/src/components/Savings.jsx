@@ -1,131 +1,139 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { FiSave, FiPlus, FiMinus, FiList } from 'react-icons/fi';
 import httpClient from '../httpClient';
 
 function Savings({ fetchExpenses, fetchSavings }) {
-  const [action, setAction] = useState('');
+  const [action, setAction] = useState('Increment');
   const [amount, setAmount] = useState('');
-  const [savings, setSavings] = useState([]);
-  const [list, setList] = useState([]);
-
-  useEffect(() => {
-    fetchSavings();
-  }, []);
+  const [savingsList, setSavingsList] = useState([]);
 
   const addSavings = async (e) => {
     e.preventDefault();
     try {
       const savingsAmount = parseInt(amount);
 
-      // Step 1: Save the action & amount to savings database
+      // Save to savings database
       await httpClient.post('//localhost:8080/save', {
         action,
         amount: savingsAmount,
       });
 
-      // Step 2: If the action is "Increment", also log it as an expense
+      // If increment, also log as expense
       if (action === "Increment") {
         await httpClient.post('//localhost:8080/expenses', {
-          name: "Savings",
-          category: "Miscellaneous",
+          name: "Savings Deposit",
+          category: "Savings",
           amount: savingsAmount,
         });
-        fetchExpenses(); // Refresh expenses list
+      } else {
+        // If decrement, log as negative expense
+        await httpClient.post('//localhost:8080/expenses', {
+          name: "Savings Withdrawal",
+          category: "Savings",
+          amount: -savingsAmount,
+        });
       }
 
-      alert('Savings updated successfully');
-      setAction('');
-      setAmount('');
+      fetchExpenses();
       fetchSavings();
+      setAmount('');
+      alert('Savings updated successfully');
     } catch (error) {
-      console.error('Error adding savings:', error);
-      alert('Unable to update savings');
+      console.error('Error updating savings:', error);
+      alert('Failed to update savings');
     }
   };
 
-  const listSavings = async (e) => {
-    e.preventDefault();
+  const listSavings = async () => {
     try {
       const response = await httpClient.get('//localhost:8080/save');
-      setList(response.data);
+      setSavingsList(response.data);
     } catch (error) {
       console.error('Error fetching savings:', error);
-      alert('Unable to list savings');
     }
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-xl font-bold mb-4 text-center">Track Savings</h1>
+    <div className="bg-white rounded-lg shadow p-4">
+      <h2 className="text-xl font-bold mb-4 flex items-center">
+        <FiSave className="mr-2" /> Savings Tracker
+      </h2>
 
-      <form className="space-y-4">
-        <div>
-          <label htmlFor="action_save" className="block text-sm font-medium text-gray-700">
-            Action
-          </label>
-          <select
-            name="action"
-            id="action_save"
-            value={action}
-            onChange={(e) => setAction(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      <form onSubmit={addSavings} className="space-y-4">
+        <div className="flex space-x-2">
+          <button
+            type="button"
+            onClick={() => setAction('Increment')}
+            className={`flex-1 py-2 px-3 rounded-md flex items-center justify-center ${action === 'Increment' ? 'bg-black text-white' : 'bg-gray-200'}`}
           >
-            <option value="">Select one</option>
-            <option value="Increment">Increment</option>
-            <option value="Decrement">Decrement</option>
-          </select>
+            <FiPlus className="mr-1" /> Deposit
+          </button>
+          <button
+            type="button"
+            onClick={() => setAction('Decrement')}
+            className={`flex-1 py-2 px-3 rounded-md flex items-center justify-center ${action === 'Decrement' ? 'bg-black text-white' : 'bg-gray-200'}`}
+          >
+            <FiMinus className="mr-1" /> Withdraw
+          </button>
         </div>
 
         <div>
-          <label htmlFor="save-amount" className="block text-sm font-medium text-gray-700">
-            Amount
-          </label>
+          <label className="block text-sm font-medium mb-1">Amount ($)</label>
           <input
             type="number"
-            name="amount"
             value={amount}
-            id="save-amount"
             onChange={(e) => setAmount(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="w-full p-2 border border-gray-300 rounded-md"
             placeholder="Enter amount"
+            required
           />
         </div>
 
-        <div className="flex space-x-4">
+        <div className="flex space-x-2">
           <button
-            onClick={addSavings}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition"
+            type="submit"
+            className="flex-1 bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition flex items-center justify-center"
           >
-            Update Savings
+            {action === 'Increment' ? (
+              <>
+                <FiPlus className="mr-1" /> Add Savings
+              </>
+            ) : (
+              <>
+                <FiMinus className="mr-1" /> Withdraw Savings
+              </>
+            )}
           </button>
           <button
+            type="button"
             onClick={listSavings}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+            className="bg-gray-200 py-2 px-4 rounded-md hover:bg-gray-300 transition flex items-center justify-center"
           >
-            List Savings
+            <FiList className="mr-1" /> History
           </button>
         </div>
       </form>
 
-      <div className="mt-6">
-        <h2 className="text-lg font-bold text-gray-700 mb-2">Savings List</h2>
-        <ul className="space-y-3">
-          {list.map((save) => (
-            <li key={save.id} className="p-4 border rounded-md bg-gray-50 shadow-sm">
-              <p className="text-sm font-medium text-gray-900">
-                <span className="font-semibold">Action:</span> {save.action}
-              </p>
-              <p className="text-sm text-gray-700">
-                <span className="font-semibold">Amount:</span> ${save.amount}
-              </p>
-              {save.total && (
-                <p className="text-sm text-gray-700">
-                  <span className="font-semibold">Total:</span> ${save.total}
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {savingsList.length > 0 && (
+        <div className="mt-6">
+          <h3 className="font-semibold mb-2">Recent Transactions</h3>
+          <div className="space-y-2">
+            {savingsList.slice(0, 3).map((saving) => (
+              <div key={saving.id} className="p-3 border-b border-gray-100 flex justify-between">
+                <div className="flex items-center">
+                  {saving.action === 'Increment' ? (
+                    <FiPlus className="text-green-500 mr-2" />
+                  ) : (
+                    <FiMinus className="text-red-500 mr-2" />
+                  )}
+                  <span>{saving.action}</span>
+                </div>
+                <span className="font-medium">${saving.amount}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

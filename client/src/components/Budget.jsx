@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import httpClient from "../httpClient";
+import { FaEdit, FaWallet, FaPercentage } from 'react-icons/fa';
 
 function Budget({ fetchExpenses, expenses, budget, fetchBudget }) {
   const [newBudget, setNewBudget] = useState("");
@@ -11,13 +12,12 @@ function Budget({ fetchExpenses, expenses, budget, fetchBudget }) {
     e.preventDefault();
     try {
       await httpClient.post("//localhost:8080/budget", { budget: newBudget });
-      alert("Budget updated");
       setNewBudget("");
       setIsEditing(false);
-      fetchBudget(); // Refresh the budget
-      fetchExpenses(); // Recalculate remaining budget
+      fetchBudget();
+      fetchExpenses();
     } catch (error) {
-      alert("Failed to update budget");
+      console.error("Failed to update budget:", error);
     }
   };
 
@@ -33,64 +33,78 @@ function Budget({ fetchExpenses, expenses, budget, fetchBudget }) {
   }, [budget, expenses]);
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-xl font-bold mb-4 text-center">Manage Budget</h1>
+    <div>
+      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <FaWallet /> Budget
+      </h2>
 
       {isEditing || budget === 0 ? (
-        <form className="space-y-4" onSubmit={changeBudget}>
+        <form onSubmit={changeBudget} className="space-y-4">
           <div>
-            <label htmlFor="budget-add" className="block text-sm font-medium text-gray-700">
-              Budget
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Monthly Budget
             </label>
             <input
               type="number"
-              name="budget"
               value={newBudget}
-              id="budget-add"
               onChange={(e) => setNewBudget(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Enter your budget"
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter budget amount"
               required
             />
           </div>
-
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition"
+            className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition"
           >
-            Update Budget
+            Set Budget
           </button>
         </form>
       ) : (
-        <div>
-          <div className="mt-6 space-y-2">
-            <h2 className="text-lg font-semibold text-gray-700">
-              Current Budget: <span className="text-green-700">${budget}</span>
-            </h2>
-            <h2 className="text-lg font-semibold text-gray-700">
-              Remaining Budget: <span className="text-blue-700">${remainingBudget}</span>
-            </h2>
-            <h2 className="text-lg font-semibold text-gray-700">
-              Leftover for this month: <span className="text-purple-700">${leftover}</span>
-            </h2>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-gray-600">Current Budget</p>
+              <p className="text-xl font-bold">${budget}</p>
+            </div>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="text-black hover:text-gray-700 flex items-center gap-1"
+            >
+              <FaEdit /> Edit
+            </button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="mt-4">
+          <div>
+            <p className="text-sm text-gray-600">Remaining Budget</p>
+            <p className="text-xl font-bold">${remainingBudget}</p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <FaPercentage className="text-gray-600" />
             <div className="w-full bg-gray-200 rounded-full h-2.5">
               <div
-                className="bg-blue-600 h-2.5 rounded-full"
+                className="bg-black h-2.5 rounded-full"
                 style={{ width: `${(remainingBudget / budget) * 100}%` }}
               ></div>
             </div>
           </div>
 
-          <button
-            onClick={() => setIsEditing(true)}
-            className="mt-4 bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-700 transition"
-          >
-            Edit Budget
-          </button>
+          {leftover > 0 && (
+            <button
+              onClick={async () => {
+                try {
+                  await httpClient.post("//localhost:8080/leftover", { leftover });
+                  setLeftover(0);
+                } catch (error) {
+                  console.error("Failed to save leftover:", error);
+                }
+              }}
+              className="w-full bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700 transition"
+            >
+              Save Leftover
+            </button>
+          )}
         </div>
       )}
     </div>
