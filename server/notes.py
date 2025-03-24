@@ -4,6 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from models import Note, Base
 from datetime import datetime
 import json
+from sqlalchemy import create_engine
+import config
 
 notes_bp = Blueprint('notes', __name__)
 
@@ -17,18 +19,18 @@ def create_note():
     data = request.json
     try:
         # Handle different note types
-        metadata = {}
+        note_data = {}
         if data.get('note_type') == 'list':
-            metadata = {'items': data.get('items', [])}
+            note_data = {'items': data.get('items', [])}
         elif data.get('note_type') == 'checklist':
-            metadata = {'items': [{'text': item, 'checked': False} for item in data.get('items', [])]}
+            note_data = {'items': [{'text': item, 'checked': False} for item in data.get('items', [])]}
 
         new_note = Note(
             title=data.get('title', 'Untitled Note'),
             content=data.get('content', ''),
             note_type=data.get('note_type', 'text'),
             is_locked=data.get('is_locked', False),
-            metadata=metadata,
+            note_data=note_data,
             tags=','.join(data.get('tags', [])) if 'tags' in data else None
         )
         
@@ -77,8 +79,8 @@ def update_note(note_id):
             note.note_type = data['note_type']
         if 'is_locked' in data:
             note.is_locked = data['is_locked']
-        if 'metadata' in data:
-            note.metadata = data['metadata']
+        if 'note_data' in data:
+            note.note_data = data['note_data']
         if 'tags' in data:
             note.tags = ','.join(data['tags']) if isinstance(data['tags'], list) else data['tags']
             

@@ -44,5 +44,22 @@ class Note(Base):
     is_locked = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    metadata = Column(JSON, nullable=True)  # For additional data like list items, etc.
+    note_data = Column(JSON, nullable=True)  # For additional data like list items, etc.
     tags = Column(String(200), nullable=True)  # Comma-separated tags
+    
+
+class Note(Base):
+    # ... existing columns ...
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'content': self.content,
+            'note_type': self.note_type,
+            'is_locked': self.is_locked,
+            'note_data': self.note_data,
+            'tags': self.tags,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }

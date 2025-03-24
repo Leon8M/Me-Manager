@@ -7,6 +7,7 @@ import config
 import calc
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
+from notes import notes_bp
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -18,8 +19,12 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
+app.register_blueprint(notes_bp, url_prefix='/api')
+
 budget = {"num": 0}
 scheduler = BackgroundScheduler()
+
+
 
 @scheduler.scheduled_job("cron", day=1, hour=0)
 def monthly_budget_job():

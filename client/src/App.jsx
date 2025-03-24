@@ -3,7 +3,7 @@ import Money from './pages/Money';
 // Import other components as they are created
 //As an example Bud:
 // import Schedule from './pages/Schedule';
-// import Notes from './pages/Notes';
+import Notes from './pages/Notes';
 
 function App() {
   const [activeTab, setActiveTab] = useState('money'); // Default tab
@@ -14,8 +14,8 @@ function App() {
         return <Money />;
       // case 'schedule':
       //   return <Schedule />;
-      // case 'notes':
-      //   return <Notes />;
+      case 'notes':
+        return <Notes />;
       default:
         return <Money />;
     }
