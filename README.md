@@ -1,7 +1,7 @@
 
 # Me Manager - Personal Finance & Productivity App
 
-Take full control of your finances and productivity with Me Manager! A progressive web app (PWA) that works offline, helping you manage money, tasks, and goals with a sleek mobile-first interface.
+Take full control of your finances and productivity with Me Manager!. It helps you manage money, tasks, and goals with a sleek mobile-first interface.
 
 ```bash
 # Start development environment
