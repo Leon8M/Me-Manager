@@ -10,7 +10,6 @@ import {
   Legend,
 } from 'chart.js';
 
-// Register Chart.js components
 ChartJS.register(
   ArcElement,
   CategoryScale,
@@ -26,62 +25,75 @@ export const PieChart = ({ expenses }) => {
     datasets: [
       {
         data: expenses.map((expense) => expense.amount),
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
       },
     ],
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Allow chart to resize
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Expense Breakdown by Category',
+        position: 'bottom',
       },
     },
   };
 
   return (
-    <div style={{ height: '300px', width: '100%' }}>
-      <Pie data={data} options={options} />
+    <div className="bg-white rounded-lg p-4 shadow mb-6">
+      <h3 className="text-lg font-semibold mb-4">Expense Breakdown</h3>
+      <div style={{ height: '250px' }}>
+        <Pie data={data} options={options} />
+      </div>
     </div>
   );
 };
 
 export const BarChart = ({ expenses }) => {
+  // Group expenses by month for the bar chart
+  const monthlyData = expenses.reduce((acc, expense) => {
+    const month = new Date(expense.created_at).toLocaleString('default', { month: 'short' });
+    if (!acc[month]) {
+      acc[month] = 0;
+    }
+    acc[month] += expense.amount;
+    return acc;
+  }, {});
+
   const data = {
-    labels: expenses.map((expense) => expense.name),
+    labels: Object.keys(monthlyData),
     datasets: [
       {
-        label: 'Expenses',
+        label: 'Monthly Expenses',
         backgroundColor: '#36A2EB',
-        data: expenses.map((expense) => expense.amount),
+        data: Object.values(monthlyData),
       },
     ],
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Allow chart to resize
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        display: false,
       },
-      title: {
-        display: true,
-        text: 'Monthly Expenses',
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
       },
     },
   };
 
   return (
-    <div style={{ height: '300px', width: '100%' }}>
-      <Bar data={data} options={options} />
+    <div className="bg-white rounded-lg p-4 shadow mb-6">
+      <h3 className="text-lg font-semibold mb-4">Monthly Trends</h3>
+      <div style={{ height: '250px' }}>
+        <Bar data={data} options={options} />
+      </div>
     </div>
   );
 };
