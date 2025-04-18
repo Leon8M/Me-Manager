@@ -115,4 +115,5 @@ Deploy!
 Support
 For issues or feature requests:
 📧 Email: leonmunene254@gmail.com
+
 😊 I know it is not perfectly secure, especially calling the backend url explicitly, it is emant for offlineuse only once i set up PWA functionality 
