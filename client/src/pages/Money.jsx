@@ -34,7 +34,7 @@ function Money() {
       setBudget(budgetRes.data.num);
       setSavings(savingsRes.data);
       
-      // Process transactions
+      // Here we process transactions
       const incomeTransactions = incomeRes.data.map(item => ({
         id: item.id,
         type: 'income',
@@ -63,7 +63,7 @@ function Money() {
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 5));
       
-      // Calculate balance
+      // And we calculate the balance here, I know, too much right
       const totalIncome = incomeRes.data.reduce((sum, item) => sum + item.amount, 0);
       const totalExpenses = expensesRes.data.reduce((sum, item) => sum + item.amount, 0);
       setBalance(totalIncome - totalExpenses);
@@ -94,7 +94,7 @@ function Money() {
         name: data.description,
         amount: parseFloat(data.amount),
         category: 'General',
-        month: new Date().toISOString().slice(0, 7) // YYYY-MM format
+        month: new Date().toISOString().slice(0, 7) // YYYY-MM format, dont question it :)
       });
       fetchAllData();
     } catch (error) {
@@ -147,7 +147,7 @@ function Money() {
 
       {activeTab === 'dashboard' && (
         <>
-          {/* Main Components - Hidden on mobile when using popups */}
+          {/* Main Components - Hidden on mobile when using popups, obviously dumb ass :) */}
           {!isMobile && (
             <div className="grid grid-cols-1 gap-4 mb-6">
               <div className="bg-white rounded-lg p-4 shadow">
@@ -207,7 +207,7 @@ function Money() {
         </div>
       )}
 
-      {/* Mobile Action Buttons */}
+      {/* Mobile Action Buttons, best to cal lthem that, ain't i proffesional 😊 */}
       {isMobile && (
         <div className="fixed bottom-4 left-0 right-0 flex justify-center gap-4 px-4">
           <button 
@@ -225,7 +225,7 @@ function Money() {
         </div>
       )}
 
-      {/* Popups */}
+      {/* Popups Poppin'*/}
       {showIncomePopup && (
         <IncomePopup 
           onClose={() => setShowIncomePopup(false)}
@@ -242,9 +242,8 @@ function Money() {
   );
 }
 
-// Monthly Summary Component
+// Monthly Summary Component, not ready to implement it fully, am a bit lazy
 const MonthlySummary = ({ expenses }) => {
-  // Group expenses by month
   const monthlyData = expenses.reduce((acc, expense) => {
     const month = new Date(expense.created_at).toLocaleString('default', { 
       month: 'short', 
@@ -258,14 +257,14 @@ const MonthlySummary = ({ expenses }) => {
   }, {});
 
   // Add income data (you would fetch this from your backend)
-  // This is a placeholder - replace with actual income data
+  // This is a placeholder, I'll replace with actuall data from database
   const monthlyIncome = {
     'Sep 2022': 16000,
     'Aug 2022': 11200,
     'Jul 2022': 15000
   };
 
-  // Combine data
+  // Combine data, best off
   const combinedData = Object.entries(monthlyData).map(([month, data]) => ({
     month,
     income: monthlyIncome[month] || 0,

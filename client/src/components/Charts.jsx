@@ -52,7 +52,6 @@ export const PieChart = ({ expenses }) => {
 };
 
 export const BarChart = ({ expenses }) => {
-  // Group expenses by month for the bar chart
   const monthlyData = expenses.reduce((acc, expense) => {
     const month = new Date(expense.created_at).toLocaleString('default', { month: 'short' });
     if (!acc[month]) {

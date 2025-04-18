@@ -4,7 +4,7 @@ function Scheduler() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({ title: '', time: '' });
 
-  // Load tasks from localStorage or public/schedulerData.json
+  // Load tasks from localStorage or public/schedulerData.json, on mobile will be different
   useEffect(() => {
     const localData = localStorage.getItem('scheduler-tasks');
     if (localData) {
@@ -27,7 +27,7 @@ function Scheduler() {
     }
   }, []);
 
-  // Store to localStorage
+  // Store to localStorage, on browser people only
   const saveTasks = (updatedTasks) => {
     setTasks(updatedTasks);
     localStorage.setItem('scheduler-tasks', JSON.stringify(updatedTasks));
@@ -46,7 +46,7 @@ function Scheduler() {
     saveTasks(updated);
   };
 
-  // Alarm logic
+  // Alarm logic to alert bro
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -61,7 +61,7 @@ function Scheduler() {
           if (!task.notified) {
             alert(`⏰ Upcoming task: "${task.title}" at ${task.time}`);
             task.notified = true;
-            saveTasks([...tasks]); // update with notification flag
+            saveTasks([...tasks]); // I should update with notification flag
           }
         }
       });

@@ -19,7 +19,6 @@ const Notes = () => {
     const fetchNotes = async () => {
         try {
             setLoading(true);
-            // Use full URL in development
             let url = 'http://localhost:8080/api/notes';
             
             if (searchQuery || activeTag) {
@@ -29,7 +28,7 @@ const Notes = () => {
             }
             
             const response = await fetch(url, {
-                credentials: 'include'  // Needed for cookies/sessions if using them
+                credentials: 'include'  // Needed for cookies/sessions if I ever use them
             });
     
             if (!response.ok) {
@@ -347,7 +346,7 @@ const Notes = () => {
                 </div>
             )}
 
-            {/* Note Editor Modal */}
+            {/* Note Editor Modal, getti g kinda long, am sorry :) */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
