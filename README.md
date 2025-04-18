@@ -81,8 +81,9 @@ cd me-manager/client
 # Install dependencies
 npm install
 pip install -r requirements.txt
-Development Setup
 ```
+## Development Setup
+
 Frontend:
 
 ```bash
