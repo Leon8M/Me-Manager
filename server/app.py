@@ -11,7 +11,7 @@ from notes import notes_bp
 
 # Initialize the Flask app
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+CORS(app, supports_credentials=True, origins=["http://localhost:5173", "https://me-manager.vercel.app/"])
 
 # Database setup
 engine = create_engine(config.DATABASE_URL, echo=True)
