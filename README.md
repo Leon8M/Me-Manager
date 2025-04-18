@@ -19,8 +19,6 @@ Development Setup
 
 Deployment
 
-Offline Usage
-
 Support
 
 ## Key Features
@@ -58,7 +56,7 @@ Tailwind CSS
 
 Chart.js for visualizations
 
-PWA capabilities
+PWA capabilities (Coming Soon)
 
 Capacitor for native mobile builds
 
@@ -66,7 +64,7 @@ Capacitor for native mobile builds
 
 Python Flask
 
-SQLite (with PostgreSQL option)
+SQLite (with PostgreSQL option if you set it up your self)
 
 SQLAlchemy ORM
 
