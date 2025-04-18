@@ -11,7 +11,7 @@ function Budget({ fetchExpenses, expenses, budget, fetchBudget }) {
   const changeBudget = async (e) => {
     e.preventDefault();
     try {
-      await httpClient.post("//localhost:8080/budget", { budget: newBudget });
+      await httpClient.post("https://me-manager.onrender.com/budget", { budget: newBudget });
       setNewBudget("");
       setIsEditing(false);
       fetchBudget();

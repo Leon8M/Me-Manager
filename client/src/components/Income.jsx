@@ -10,7 +10,7 @@ function Income() {
   const addIncome = async (e) => {
     e.preventDefault();
     try {
-      await httpClient.post('//localhost:8080/income', {
+      await httpClient.post('https://me-manager.onrender.com/income', {
         name,
         amount,
       });
@@ -24,7 +24,7 @@ function Income() {
   const listIncome = async (e) => {
     e.preventDefault();
     try {
-      const response = await httpClient.get('//localhost:8080/income');
+      const response = await httpClient.get('https://me-manager.onrender.com/income');
       setList(response.data);
     } catch (error) {
       console.error('Error fetching income:', error);

@@ -11,7 +11,7 @@ function Expenses({ fetchExpenses }) {
   const addExpense = async (e) => {
     e.preventDefault();
     try {
-      await httpClient.post('//localhost:8080/expenses', {
+      await httpClient.post('https://me-manager.onrender.com/expenses', {
         name,
         amount,
         category
@@ -28,7 +28,7 @@ function Expenses({ fetchExpenses }) {
   const listExpenses = async (e) => {
     e.preventDefault();
     try {
-      const response = await httpClient.get('//localhost:8080/expenses');
+      const response = await httpClient.get('https://me-manager.onrender.com/expenses');
       setList(response.data);
     } catch (error) {
       console.error('Error fetching expenses:', error);

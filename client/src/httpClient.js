@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default axios.create({
     withCredentials: true,
-    baseURL: "http://localhost:8080",
+    baseURL: "https://me-manager.onrender.com",
     headers: {
         "Content-Type": "application/json",
     },

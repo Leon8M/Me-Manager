@@ -19,10 +19,10 @@ const Notes = () => {
     const fetchNotes = async () => {
         try {
             setLoading(true);
-            let url = 'http://localhost:8080/api/notes';
+            let url = 'https://me-manager.onrender.com/api/notes';
             
             if (searchQuery || activeTag) {
-                url = 'http://localhost:8080/api/notes/search?';
+                url = 'https://me-manager.onrender.com/api/notes/search?';
                 if (searchQuery) url += `q=${encodeURIComponent(searchQuery)}`;
                 if (activeTag) url += `${searchQuery ? '&' : ''}tag=${encodeURIComponent(activeTag)}`;
             }

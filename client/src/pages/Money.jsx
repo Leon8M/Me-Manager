@@ -24,10 +24,10 @@ function Money() {
   const fetchAllData = async () => {
     try {
       const [expensesRes, budgetRes, savingsRes, incomeRes] = await Promise.all([
-        httpClient.get('//localhost:8080/expenses'),
-        httpClient.get('//localhost:8080/budget'),
-        httpClient.get('//localhost:8080/save'),
-        httpClient.get('//localhost:8080/income')
+        httpClient.get('https://me-manager.onrender.com/expenses'),
+        httpClient.get('https://me-manager.onrender.com/budget'),
+        httpClient.get('https://me-manager.onrender.com/save'),
+        httpClient.get('https://me-manager.onrender.com/income')
       ]);
 
       setExpenses(expensesRes.data);
@@ -90,7 +90,7 @@ function Money() {
 
   const handleAddExpense = async (data) => {
     try {
-      await httpClient.post('//localhost:8080/expenses', {
+      await httpClient.post('https://me-manager.onrender.com/expenses', {
         name: data.description,
         amount: parseFloat(data.amount),
         category: 'General',
