@@ -34,14 +34,7 @@ function App() {
         >
           Money Manager
         </button>
-        <button
-          onClick={() => setActiveTab('schedule')}
-          className={`py-2 px-4 rounded w-full md:w-auto transition-all ${
-            activeTab === 'schedule' ? 'bg-white text-black' : 'bg-gray-800 hover:bg-gray-700'
-          }`}
-        >
-          Schedule
-        </button>
+        
         <button
           onClick={() => setActiveTab('notes')}
           className={`py-2 px-4 rounded w-full md:w-auto transition-all ${
@@ -49,6 +42,14 @@ function App() {
           }`}
         >
           Notes
+        </button>
+        <button
+          onClick={() => setActiveTab('schedule')}
+          className={`py-2 px-4 rounded w-full md:w-auto transition-all ${
+            activeTab === 'schedule' ? 'bg-white text-black' : 'bg-gray-800 hover:bg-gray-700'
+          }`}
+        >
+          Schedule
         </button>
       </nav>
 
